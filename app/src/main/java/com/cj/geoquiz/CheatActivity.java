@@ -12,8 +12,10 @@ public class CheatActivity extends AppCompatActivity {
 
     private static final String EXTRA_ANSWER_IS_TRUE = "com.cj.geoquiz.answer_is_true";
     private static final String EXTRA_ANSWER_SHOWN = "com.cj.geoquiz.answer_shown";
+    private static final String FLAG_CHEATED = "cheated";
 
     private boolean mAnswerIsTrue;
+    private boolean mCheated = false;
 
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
@@ -37,17 +39,34 @@ public class CheatActivity extends AppCompatActivity {
 
         mAnswerTextView = findViewById(R.id.answer_text_view);
 
+        if (savedInstanceState != null) {
+            mCheated = savedInstanceState.getBoolean(FLAG_CHEATED, false);
+            if (mCheated)
+                updateAnswer();
+        }
+
         mShowAnswerButton = findViewById(R.id.show_answer_button);
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAnswerIsTrue)
-                    mAnswerTextView.setText(R.string.true_button);
-                else
-                    mAnswerTextView.setText(R.string.false_button);
-                setAnswerShownResult(true);
+                mCheated = true;
+                updateAnswer();
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean(FLAG_CHEATED, mCheated);
+    }
+
+    private void updateAnswer() {
+        if (mAnswerIsTrue)
+            mAnswerTextView.setText(R.string.true_button);
+        else
+            mAnswerTextView.setText(R.string.false_button);
+        setAnswerShownResult(true);
     }
 
     private void setAnswerShownResult(boolean isAnswerShown) {
