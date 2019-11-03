@@ -17,7 +17,9 @@ public class QuizActivity extends AppCompatActivity {
     private static final String KEY_INDEX = "index";
     private static final String ANSWERED_ARRAY = "answered";
     private static final String CHEATED_ARRAY = "cheated";
+    private static final String CHEATED_COUNT = "cheated_count";
     private static final int REQUEST_CODE_CHEAT = 0;
+    private static final int MOST_CHEAT_COUNT = 3;
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -35,6 +37,7 @@ public class QuizActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
+    private int mCheatedCount = 0;
 
     private boolean[] mAnswered = new boolean[mQuestionBank.length];
     private int mAnsweredCnt = 0;
@@ -49,6 +52,7 @@ public class QuizActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mCheatedCount = savedInstanceState.getInt(CHEATED_COUNT, 0);
             mAnswered = savedInstanceState.getBooleanArray(ANSWERED_ARRAY);
             mCheated = savedInstanceState.getBooleanArray(CHEATED_ARRAY);
         }
@@ -76,6 +80,8 @@ public class QuizActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
             }
         });
+        if (mCheatedCount == MOST_CHEAT_COUNT)
+            mCheatButton.setEnabled(false);
 
         updateQuestion();
     }
@@ -88,6 +94,8 @@ public class QuizActivity extends AppCompatActivity {
             if (data == null)
                 return;
             mCheated[mCurrentIndex] = CheatActivity.wasAnswerShown(data);
+            if (mCheated[mCurrentIndex] && ++mCheatedCount == MOST_CHEAT_COUNT)
+                mCheatButton.setEnabled(false);
         }
     }
 
@@ -114,6 +122,7 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState: ");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putInt(CHEATED_COUNT, mCheatedCount);
         savedInstanceState.putBooleanArray(ANSWERED_ARRAY, mAnswered);
         savedInstanceState.putBooleanArray(CHEATED_ARRAY, mCheated);
     }

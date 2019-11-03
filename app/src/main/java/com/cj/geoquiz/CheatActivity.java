@@ -73,6 +73,9 @@ public class CheatActivity extends AppCompatActivity {
                     mShowAnswerButton.setVisibility(View.INVISIBLE);
             }
         });
+
+        TextView apiLevel = findViewById(R.id.api_level);
+        apiLevel.setText("API Level " + Build.VERSION.SDK_INT);
     }
 
     @Override
