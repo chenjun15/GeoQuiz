@@ -158,7 +158,8 @@ public class QuizActivity extends AppCompatActivity {
 
     private void checkAnswer(boolean userPressedTrue) {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-        int messageResId = 0;
+
+        int messageResId;
 
         if (mCheated[mCurrentIndex]) {
             messageResId = R.string.judgment_toast;
